@@ -1,0 +1,5 @@
+import numpy
+m = int(input())
+n = int(input())
+a = [int(x) for x in input().split()][:n]
+

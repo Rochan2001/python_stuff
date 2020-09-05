@@ -1,0 +1,356 @@
+FCFS CPU SCHEDULING ALGORITHM
+
+#include<stdio.h>
+int main()
+{
+    int bt[10], tat[10], wt[10], i, n
+    float wtavg, tatavg
+    printf("Enter the processes---")
+    scanf("%d", & n)
+    for(i=0
+        i < n
+        i++)
+    {
+        printf("\n Enter the burst time for process %d", i)
+        scanf("%d", & bt[i])
+    }
+    wt[0] = wtavg = 0
+    tat[0] = tatavg = bt[0]
+
+    for(i=1
+        i < n
+        i++)
+    {
+        wt[i] = wt[i-1]+bt[i-1]
+        tat[i] = tat[i-1]+bt[i]
+        wtavg = wtavg+wt[i]
+        tatavg = tatavg+tat[i]
+    }
+
+    printf("\n\tPROCESS\tBURST TIME\tWAITING TIME\tTURNAROUND TIME\n")
+    for(i=0
+        i < n
+        i++)
+    {
+        printf("\n\tp%d\t\t%d\t\t%d\t\t%d", i, bt[i], wt[i], tat[i])
+    }
+    printf("\n Average waiting time is---%.2f", wtavg/n)
+    printf("\n Average turnaround time is---%.2f", tatavg/n)
+}
+
+INPUT
+
+kmit@fs2-39: ~$ cc fcfs.c
+kmit@fs2-39: ~$ ./a.out
+Enter the processes---3
+
+Enter the burst time for process 024
+
+Enter the burst time for process 13
+
+Enter the burst time for process 23
+
+OUTPUT
+
+PROCESS	BURST TIME	WAITING TIME	TURNAROUND TIME
+
+p0		24		0		24
+p1		3		24		27
+p2		3		27		30
+Average waiting time is---17.00
+Average turnaround time is---27.00
+
+
+1.3.2   SJF CPU SCHEDULING ALGORITHM
+
+#include<stdio.h>
+void main()
+{
+    int p[20], bt[20], wt[20], tat[20], i, k, n, temp
+    float wtavg, tatavg
+    printf("\nEnter the number of processes -- ")
+    scanf("%d", & n)
+    for(i=0
+        i < n
+        i++)
+    {
+        p[i] = i
+        printf("Enter Burst Time for Process %d -- ", i)
+        scanf("%d", & bt[i])
+    }
+    for(i=0
+        i < n
+        i++)
+    for(k=i+1
+        k < n
+        k++)
+    if(bt[i] > bt[k])
+    {
+        temp = bt[i]
+        bt[i] = bt[k]
+        bt[k] = temp
+        temp = p[i]
+        p[i] = p[k]
+        p[k] = temp
+    }
+    wt[0] = wtavg = 0
+    tat[0] = tatavg = bt[0]
+    for(i=1
+        i < n
+        i++)
+
+    {
+        wt[i] = wt[i-1] + bt[i-1]
+        tat[i] = tat[i-1] + bt[i]
+        wtavg = wtavg + wt[i]
+        tatavg = tatavg + tat[i]
+    }
+    printf("\n\t PROCESS \tBURST TIME \t WAITING TIME\t TURNAROUND TIME\n")
+    for(i=0
+        i < n
+        i++)
+    printf("\n\t P%d \t\t %d \t\t %d \t\t %d", p[i], bt[i], wt[i], tat[i])
+    printf("\nAverage Waiting Time -- %f", wtavg/n)
+
+    printf("\nAverage Turnaround Time -- %f", tatavg/n)
+}
+
+INPUT
+
+Enter the number of processes - - 4
+Enter Burst Time for Process 0 - - 3
+Enter Burst Time for Process 1 - - 6
+Enter Burst Time for Process 2 - - 7
+Enter Burst Time for Process 3  8
+
+OUTPUT
+
+PROCESS 	BURST TIME 	 WAITING TIME	 TURNAROUND TIME
+
+P0 		 3 		 0 		 3
+P1 		 6 		 3 		 9
+P2 		 7 		 9 		 16
+P3 		 8 		 16 		 24
+
+Average Waiting Time - - 7.000000
+Average Turnaround Time  13.000000
+
+1.3.3	ROUND ROBIN CPU SCHEDULING ALGORITHM
+
+#include<stdio.h>
+int main()
+{
+    int ts, pid[10], need[10], wt[10], tat[10], i, j, n, n1
+    int bt[10], flag[10], ttat = 0, twt = 0
+    float awt, atat
+    printf("\t\t ROUND ROBIN SCHEDULING \n")
+    printf("Enter the number of Processes \n")
+    scanf("%d", & n)
+    n1 = n
+    printf("\n Enter the Timeslice \n")
+    scanf("%d", & ts)
+    for(i=1
+        i <= n
+        i++)
+    {
+        printf("\n Enter the process ID")
+        scanf("%d", & pid[i])
+        printf("\n Enter the Burst Time for the process")
+        scanf("%d", & bt[i])
+        need[i] = bt[i]
+    }
+    for(i=1
+        i <= n
+        i++)
+    {
+        flag[i] = 1
+        wt[i] = 0
+    }
+    while(n != 0)
+
+
+    {
+        for(i=1
+            i <= n
+            i++)
+        {
+
+            if(need[i] >= ts)
+            {
+                for(j=1
+                    j <= n
+                    j++)
+                {
+                    if((i != j) & &(flag[i] == 1) & &(need[j] != 0))
+                    wt[j] += ts
+                }
+                need[i] -= ts
+                if(need[i] == 0)
+                {
+                    flag[i] = 0
+                    n--
+                }
+            }
+            else
+            {
+                for(j=1
+                    j <= n
+                    j++)
+                {
+                    if((i != j) & &(flag[i] == 1) & &(need[j] != 0))
+                    wt[j] += need[i]
+                }
+                need[i] = 0
+                n--
+                flag[i] = 0
+            }
+        }
+    }
+    for(i=1
+        i <= n1
+        i++)
+    {
+        tat[i] = wt[i]+bt[i]
+        twt = twt+wt[i]
+        ttat = ttat+tat[i]
+    }
+    awt = (float)twt/n1
+    atat = (float)ttat/n1
+    printf("\n\n ROUND ROBIN SCHEDULING ALGORITHM \n\n")
+    printf("\n\n Process \t Process ID  \t BurstTime \t Waiting Time \t TurnaroundTime \n ")
+    for(i=1
+        i <= n1
+        i++)
+    {
+        printf("\n %5d \t %5d \t\t %5d \t\t %5d \t\t %5d \n",
+               i, pid[i], bt[i], wt[i], tat[i])
+    }
+    printf("\n The average Waiting Time=%.2f", awt)
+    printf("\n The average Turn around Time=%.2f", atat)
+    return 0
+}
+
+
+INPUT
+
+ROUND ROBIN SCHEDULING
+Enter the number of Processes
+4
+
+Enter the Timeslice
+3
+
+Enter the process ID1
+
+Enter the Burst Time for the process4
+
+Enter the process ID2
+
+Enter the Burst Time for the process5
+
+Enter the process ID3
+
+Enter the Burst Time for the process6
+
+Enter the process ID4
+
+Enter the Burst Time for the process3
+
+OUTPUT
+
+ROUND ROBIN SCHEDULING ALGORITHM
+
+
+Process 	 Process ID  	 Burst Time 	 Waiting Time 	 Turnaround Time
+
+1 	     1 		     4 		     9 		    13
+
+2 	     2 		     5 		    10 		    15
+
+3 	     3 		     6 		    10 		    16
+
+4 	     4 		     3 		     9 		    12
+
+
+The average Waiting Time = 9.50
+
+The average Turnaround Time = 14.00
+
+1.3.4	PRIORITY CPU SCHEDULING ALGORITHM
+
+Priority
+
+#include<stdio.h>
+void main()
+{
+    int p[20], bt[20], pri[20], wt[20], tat[20], i, k, n, temp
+
+
+    float wtavg, tatavg
+
+    printf("Enter the number of processes --- ")
+    scanf("%d", & n)
+    for(i=0
+        i < n
+        i++)
+    {
+        p[i] = i
+        printf("Enter the Burst Time & Priority of Process %d --- ", i)
+        scanf("%d %d", & bt[i], & pri[i])
+    }
+    for(i=0
+        i < n
+        i++)
+    for(k=i+1
+        k < n
+        k++)
+    if(pri[i] > pri[k])
+    {
+        temp = p[i]
+        p[i] = p[k]
+        p[k] = temp
+        temp = bt[i]
+        bt[i] = bt[k]
+        bt[k] = temp
+        temp = pri[i]
+        pri[i] = pri[k]
+        pri[k] = temp
+    }
+    wtavg = wt[0] = 0
+    tatavg = tat[0] = bt[0]
+    for(i=1
+        i < n
+        i++)
+    {
+        wt[i] = wt[i-1] + bt[i-1]
+        tat[i] = tat[i-1] + bt[i]
+
+        wtavg = wtavg + wt[i]
+        tatavg = tatavg + tat[i]
+    }
+    printf("\nPROCESS\t\tPRIORITY\tBURST TIME\tWAITING TIME\tTURNAROUND TIME")
+    for(i=0
+        i < n
+        i++)
+    printf("\n%d \t\t %d \t\t %d \t\t %d \t\t %d ",
+           p[i], pri[i], bt[i], wt[i], tat[i])
+    printf("\nAverage Waiting Time is --- %f", wtavg/n)
+    printf("\nAverage Turnaround Time is --- %f", tatavg/n)
+}
+
+INPUT
+
+Enter the number of processes - -- 3
+Enter the Burst Time & Priority of Process 0 - -- 3 3
+Enter the Burst Time & Priority of Process 1 - -- 2 1
+Enter the Burst Time & Priority of Process 2 - -- 5 2
+
+
+OUTPUT
+
+PROCESS		PRIORITY	BURST TIME	WAITING TIME	TURNAROUND TIME
+1 		 1 		 2 		 0 		 2
+2 		 2 		 5 		 2 		 7
+0 		 3 		 3 		 7 		 10
+Average Waiting Time is --- 3.000000
+Average Turnaround Time is --- 6.333333
